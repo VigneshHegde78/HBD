@@ -117,8 +117,8 @@
       .card-stack {
         position: relative;
         width: 100%;
-        max-width: 720px;
-        height: 460px;
+        max-width: 980px;
+        height: 550px;
         margin-top: 2rem;
       }
 
@@ -174,7 +174,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         pointer-events: none;
         transition: opacity 0.8s ease-in-out;
       }
@@ -194,9 +194,10 @@
       }
 
       .polaroid-text {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         color: #4a4a4a;
         line-height: 1.4;
+        margin-top: 10px;
       }
 
       .polaroid-author {
@@ -204,6 +205,38 @@
         color: #db2777;
         margin-top: 10px;
         text-align: right;
+      }
+
+      @media (max-width: 640px) {
+        .card-stack {
+          max-width: 390px;
+          height: 620px;
+        }
+
+        .stacked-card {
+          flex-direction: column;
+          gap: 12px;
+          padding: 12px 12px 20px;
+        }
+
+        .stacked-card.image-right .photo-container {
+          order: 0;
+        }
+
+        .photo-container {
+          flex: 0 0 52%;
+          width: 100%;
+          height: auto;
+        }
+
+        .card-content {
+          flex: 1 1 auto;
+          text-align: center;
+        }
+
+        .polaroid-author {
+          text-align: center;
+        }
       }
 
       #reveal-screen {
@@ -404,16 +437,16 @@
         },
         {
           name: "Harsh Parab",
-          images: ["assets/images/parab_1.jpg"],
+          images: ["assets/images/parab.jpeg"],
           message:
             "Talli🍻 person of the group most unfiltered inshort guttar😂😅, but don't mind chiklatunach kamal khilta hai, so take it as a compliment🫶🏻🤙🏻",
         },
-        // {
-        //   name: "Vignesh",
-        //   images: ["assets/images/vignesh_2.jpg"],
-        //   message:
-        //     "Happy B-Day! Throwback to this amazing concert. We need to go back! Have a beautiful day. 🎶",
-        // },
+        {
+          name: "Vignesh",
+          images: ["assets/images/vignesh_2.jpg"],
+          message:
+            "😉👓🤏, Bhai, pehli baat toh ye bhot ajeeb sawal hai ki 'Y are we friends?'. You don't even need a reason or logic for friendship! I just really like your vibe, and honestly, it's fun to ragebait someone weaker 🗿. Baaki mera friend hone ka sobhagya jyada log ko nhi milta 😎",
+        },
       ];
 
       document.addEventListener("DOMContentLoaded", () => {
