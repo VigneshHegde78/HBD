@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday! 🎈</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Quicksand:wght@400;600&display=swap"
+      rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      body {
+        font-family: "Quicksand", sans-serif;
+        background-color: #fdfbfb;
+        overflow-x: hidden;
+      }
+
+      h1,
+      h2,
+      .handwritten {
+        font-family: "Caveat", cursive;
+      }
+
+      /* Hero Background Gradient Animation */
+      .hero-gradient {
+        background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
+        background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        background: linear-gradient(45deg, #ffc3a0 0%, #ffafbd 100%);
+        background-size: 200% 200%;
+        animation: gradientMove 10s ease infinite;
+      }
+
+      @keyframes gradientMove {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      /* Floating Hearts Animation */
+      .heart {
+        position: absolute;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 24px;
+        animation: floatUp 8s linear infinite;
+        z-index: 1;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(100vh) rotate(0deg) scale(1);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(-10vh) rotate(360deg) scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      /* Bounce Animation for Scroll Indicator */
+      .bounce {
+        animation: bounce 2s infinite;
+      }
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-20px);
+        }
+        60% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* Pinterest Masonry Layout */
+      .masonry {
+        column-count: 1;
+        column-gap: 1.5rem;
+      }
+      @media (min-width: 640px) {
+        .masonry {
+          column-count: 2;
+        }
+      }
+      @media (min-width: 768px) {
+        .masonry {
+          column-count: 3;
+        }
+      }
+      @media (min-width: 1024px) {
+        .masonry {
+          column-count: 4;
+        }
+      }
+
+      /* Polaroid Card Styling */
+      .polaroid {
+        break-inside: avoid;
+        background: #fff;
+        padding: 15px 15px 50px 15px; /* Larger bottom padding for polaroid look */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      .polaroid.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .polaroid:hover {
+        transform: scale(1.08) rotate(0deg) !important;
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+      }
+
+      /* Tape effect */
+      .polaroid::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 25px;
+        background: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(2px);
+        z-index: 2;
+        transform: translateX(-50%) rotate(-3deg);
+      }
+
+      .photo-container {
+        overflow: hidden;
+        border-radius: 2px;
+        margin-bottom: 15px;
+        background: #f0f0f0;
+      }
+
+      .photo-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: transform 0.5s ease;
+      }
+
+      .polaroid:hover .photo-container img {
+        transform: scale(1.05);
+      }
+
+      .polaroid-text {
+        font-size: 1.1rem;
+        color: #4a4a4a;
+        line-height: 1.4;
+      }
+
+      .polaroid-author {
+        font-size: 1.4rem;
+        color: #db2777; /* Tailwind pink-600 */
+        margin-top: 10px;
+        text-align: right;
+      }
+
+      #reveal-screen {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #fdfbfb 0%, #ffe2ed 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        transition:
+          opacity 0.8s ease-out,
+          visibility 0.8s ease-out;
+      }
+
+      #reveal-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .gift-icon {
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        animation: gentleBounce 2s infinite ease-in-out;
+        cursor: pointer;
+        user-select: none;
+        transition: transform 0.3s;
+        filter: drop-shadow(0 15px 25px rgba(219, 39, 119, 0.3));
+      }
+
+      .gift-icon:hover {
+        transform: scale(1.1) rotate(5deg);
+        animation: none;
+      }
+
+      @keyframes gentleBounce {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-15px) scale(1.05);
+        }
+      }
+
+      .reveal-text {
+        font-family: "Caveat", cursive;
+        font-size: 3.5rem;
+        color: #db2777;
+        margin-bottom: 2rem;
+        text-align: center;
+        padding: 0 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+      }
+    </style>
+  </head>
+  <body class="antialiased text-gray-800 relative">
+    <div id="reveal-screen">
+      <h2 class="reveal-text">A special surprise for you...</h2>
+      <img
+        src="assets/images/gift_box.png"
+        id="gift-icon"
+        class="gift-icon"
+        alt="Beautiful Gift Box"
+        role="button"
+        aria-label="Open Gift" />
+      <p
+        class="text-pink-500 mt-8 font-bold text-xl font-['Quicksand'] animate-pulse tracking-widest uppercase">
+        Tap to open!
+      </p>
+    </div>
+
+    <!-- Hero Section -->
+    <header
+      class="relative hero-gradient min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      <!-- Hearts Container -->
+      <div id="hearts-container" class="absolute inset-0 overflow-hidden"></div>
+
+      <!-- Main Content -->
+      <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        <h2
+          class="text-3xl md:text-5xl text-pink-700 font-bold mb-4 drop-shadow-sm handwritten">
+          To the most amazing person,
+        </h2>
+        <h1
+          class="text-7xl md:text-9xl text-white font-bold mb-6 drop-shadow-lg handwritten tracking-wide">
+          Happy Birthday!
+        </h1>
+        <p
+          class="text-lg md:text-2xl text-pink-800 font-semibold mb-12 max-w-2xl mx-auto drop-shadow-sm">
+          We couldn't celebrate without looking back at all our favorite
+          memories with you. Scroll down to see some love from your favorite
+          people! ✨
+        </p>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <a
+        href="#memories"
+        class="absolute bottom-10 z-10 text-white hover:text-pink-200 transition-colors cursor-pointer bounce flex flex-col items-center">
+        <span
+          class="text-sm uppercase tracking-widest font-semibold mb-2 shadow-sm"
+          >Scroll for Memories</span
+        >
+        <svg
+          class="w-8 h-8 drop-shadow-md"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </a>
+    </header>
+
+    <!-- Memories Section -->
+    <section id="memories" class="py-20 px-4 md:px-8 bg-[#fdfbfb]">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl md:text-6xl text-pink-600 handwritten mb-4">
+            Our Favorite Moments
+          </h2>
+          <div class="w-24 h-1 bg-pink-300 mx-auto rounded-full"></div>
+        </div>
+
+        <!-- Masonry Grid for Polaroids -->
+        <div id="masonry-grid" class="masonry">
+          <!-- Cards will be injected here by JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 text-center text-pink-800/60 font-medium">
+      <p>Made with ❤️ by your friends. Have the best birthday ever!</p>
+    </footer>
+
+    <script>
+      // Dummy data for friends' messages
+      // You can easily replace these with real images and messages later
+      const memories = [
+        {
+          name: "Sarah",
+          image: "https://picsum.photos/400/500?random=1",
+          message:
+            "Happy Birthday! Remember that time we got lost in the city? Best day ever. Hope your day is as amazing as you are! 💖",
+        },
+        {
+          name: "Jessica",
+          image: "https://picsum.photos/400/300?random=2",
+          message:
+            "Wishing you the happiest of birthdays! Thanks for always being my shoulder to cry on and my partner in crime.",
+        },
+        {
+          name: "Emily",
+          image: "https://picsum.photos/400/600?random=3",
+          message:
+            "Happy birthday bestie!! So grateful for all our late-night talks and spontaneous coffee runs. Let's make more memories this year!",
+        },
+        {
+          name: "David",
+          image: "https://picsum.photos/400/400?random=4",
+          message:
+            "Have a fantastic birthday! I still laugh thinking about our road trip. Here is to another year of adventures.",
+        },
+        {
+          name: "Chloe",
+          image: "https://picsum.photos/400/450?random=5",
+          message:
+            "Happy bday! You literally light up every room you walk into. Keep shining and never change! ✨",
+        },
+        {
+          name: "Michael",
+          image: "https://picsum.photos/400/350?random=6",
+          message:
+            "Happy Birthday! Hope you get to eat all the cake today. We need to celebrate properly soon!",
+        },
+        {
+          name: "Amanda",
+          image: "https://picsum.photos/400/550?random=7",
+          message:
+            "To my favorite person to do absolutely nothing with: Happy Birthday! I love you so much!",
+        },
+        {
+          name: "Rachel",
+          image: "https://picsum.photos/400/320?random=8",
+          message:
+            "Happy birthday!! Cheers to the girl who knows all my secrets and still hangs out with me. 🥂",
+        },
+        {
+          name: "Chris",
+          image: "https://picsum.photos/400/480?random=9",
+          message:
+            "Wishing you a birthday as wonderful and sweet as you are. Have the best day ever!",
+        },
+        {
+          name: "Sophie",
+          image: "https://picsum.photos/400/420?random=10",
+          message:
+            "Happy B-Day! Throwback to this amazing concert. We need to go back! Have a beautiful day. 🎶",
+        },
+        {
+          name: "Liam",
+          image: "https://picsum.photos/400/380?random=11",
+          message:
+            "Happy birthday! Sending you lots of love and good vibes for the year ahead.",
+        },
+        {
+          name: "Zoe",
+          image: "https://picsum.photos/400/520?random=12",
+          message:
+            "Happy Birthday gorgeous! Life is so much better with you in it. Let's party! 🎉",
+        },
+      ];
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const revealScreen = document.getElementById("reveal-screen");
+        const giftIcon = document.getElementById("gift-icon");
+
+        const triggerSurprise = () => {
+          // Fade out the overlay screen
+          revealScreen.classList.add("hidden");
+
+          // Fire Confetti Animation after a tiny delay
+          setTimeout(() => {
+            const duration = 4 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = {
+              startVelocity: 30,
+              spread: 360,
+              ticks: 60,
+              zIndex: 100,
+            };
+
+            function randomInRange(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function () {
+              const timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              const particleCount = 50 * (timeLeft / duration);
+
+              // Fire confetti from left and right edges
+              confetti(
+                Object.assign({}, defaults, {
+                  particleCount,
+                  origin: {
+                    x: randomInRange(0.1, 0.3),
+                    y: Math.random() - 0.2,
+                  },
+                })
+              );
+              confetti(
+                Object.assign({}, defaults, {
+                  particleCount,
+                  origin: {
+                    x: randomInRange(0.7, 0.9),
+                    y: Math.random() - 0.2,
+                  },
+                })
+              );
+            }, 250);
+          }, 300);
+        };
+
+        // Allow clicking the gift box to trigger the surprise
+        giftIcon.addEventListener("click", triggerSurprise);
+
+        // 1. Generate Floating Hearts in Hero Section
+        const heartsContainer = document.getElementById("hearts-container");
+        const heartIcons = ["🤍", "🌸", "✨", "🎈", "💖"];
+
+        for (let i = 0; i < 20; i++) {
+          const heart = document.createElement("div");
+          heart.className = "heart";
+          heart.innerText =
+            heartIcons[Math.floor(Math.random() * heartIcons.length)];
+
+          // Randomize position, size, and animation timing
+          heart.style.left = `${Math.random() * 100}vw`;
+          heart.style.animationDelay = `${Math.random() * 8}s`;
+          heart.style.animationDuration = `${6 + Math.random() * 6}s`;
+          heart.style.fontSize = `${16 + Math.random() * 20}px`;
+
+          heartsContainer.appendChild(heart);
+        }
+
+        // 2. Render Polaroid Cards
+        const grid = document.getElementById("masonry-grid");
+
+        memories.forEach((memory, index) => {
+          // Generate a random slight rotation between -4deg and 4deg
+          const rotation = (Math.random() * 8 - 4).toFixed(1);
+
+          const cardHTML = `
+                    <div class="polaroid" style="transform: translateY(30px) rotate(${rotation}deg);" data-rotation="${rotation}">
+                        <div class="photo-container">
+                            <img src="${memory.image}" alt="Memory with ${memory.name}" loading="lazy">
+                        </div>
+                        <p class="polaroid-text">${memory.message}</p>
+                        <h3 class="polaroid-author handwritten">Love, ${memory.name}</h3>
+                    </div>
+                `;
+          grid.insertAdjacentHTML("beforeend", cardHTML);
+        });
+
+        // 3. Intersection Observer for Scroll Animations
+        const observerOptions = {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0.15, // Trigger when 15% of the card is visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const card = entry.target;
+              // Add visible class
+              card.classList.add("visible");
+
+              // Set the final transform state combining translation and the original random rotation
+              const rotation = card.getAttribute("data-rotation");
+              card.style.transform = `translateY(0) rotate(${rotation}deg)`;
+
+              // Stop observing once animated
+              observer.unobserve(card);
+            }
+          });
+        }, observerOptions);
+
+        // Start observing all polaroid cards
+        document.querySelectorAll(".polaroid").forEach((card) => {
+          observer.observe(card);
+        });
+      });
+    </script>
+  </body>
+</html>
